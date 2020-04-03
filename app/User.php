@@ -62,7 +62,7 @@ class User extends Authenticatable
              foreach($user->lists as $list){
                 $list->delete();
               }
-             File::delete($user->image);
+              File::Delete(str_replace("http://localhost:8000/","",$user->image));
         });
     }
 

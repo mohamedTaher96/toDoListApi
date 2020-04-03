@@ -123,7 +123,7 @@ class AuthController extends Controller
             return response(['status'=>1,'msg'=>'done','data'=>$user->id]);
         }else
         {
-            return response(['status'=>0,'msg'=>[email=>"This Email is not confirmed"]]);
+            return response(['status'=>0,'msg'=>['email'=>"This Email is not confirmed"]]);
         }
 
     }

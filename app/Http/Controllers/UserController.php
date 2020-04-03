@@ -11,6 +11,7 @@ use App\user;
 use App\position;
 use Mail;
 use File;
+use Hash;
 
 class UserController extends Controller
 {
@@ -107,10 +108,6 @@ class UserController extends Controller
             
             return response(['status'=>1,'msg'=>'success']);
         }
-
-
-        
-        
     }
 
     public function user_info(Request $request)
@@ -127,7 +124,6 @@ class UserController extends Controller
     {
         
         $input = $request->all();
-        
         $validator = Validator::make($input, [
             
             'position_id'=>'required',
@@ -140,7 +136,6 @@ class UserController extends Controller
         ]);
 
         $user = user::where(['api_auth'=>$request->api_auth,'is_confirm'=>1])->first();
-
         if($validator->fails())
         {
             return response(['status'=>0,'msg'=>$validator->errors()]);
@@ -149,18 +144,15 @@ class UserController extends Controller
         { 
             return response(['status'=>0,'msg'=>(['email'=>'this email is used'])]);
         }
-        
 
-        
         if (request()->hasFile('uploadfile')) {
-            File::delete($user->image);
             $file = request()->file('uploadfile');
             $fileName = md5($file->getClientOriginalName() . time()) . "." . $file->getClientOriginalExtension();
             $file->move('./uploads/users_profile/', $fileName);    
             $input['image']= $fileName;
-            
+            File::Delete(str_replace("http://localhost:8000/","",$user->image));     
         }   
-
+        $input['password'] = Hash::make($request->password);
         $user->update($input);
         return response(['status'=>1,'msg'=>'success']);
     
